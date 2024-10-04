@@ -1,10 +1,9 @@
 import {Module} from '@nestjs/common';
-import {AppController} from './app.controller';
-import {AppService} from './app.service';
 import {AuthModule} from './auth/auth.module';
 import {TypeOrmModule} from "@nestjs/typeorm";
 import {UsersModule} from './users/users.module';
 import {ProductsModule} from './products/products.module';
+import {PrometheusModule} from "@willsoto/nestjs-prometheus";
 
 @Module({
   imports: [
@@ -13,8 +12,11 @@ import {ProductsModule} from './products/products.module';
       database: 'database.sqlite',
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
-    }), AuthModule, UsersModule, ProductsModule],
-  controllers: [AppController],
-  providers: [AppService],
+    }), AuthModule, UsersModule, ProductsModule, PrometheusModule.register({
+      path: '/metrics',
+      defaultMetrics: {
+        enabled: true
+      }
+    })],
 })
 export class AppModule {}
